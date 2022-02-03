@@ -9,7 +9,7 @@ class CMainWnd : public CWindowImpl<CMainWnd>
         CMainWnd() ; 
         ~CMainWnd() ; 
     public :
-        DECLARE_WND_CLASS(_T("ATLProject"))
+        DECLARE_WND_CLASS(_T("ImageViwer"))
 
         BEGIN_MSG_MAP(CMainWnd)
             MESSAGE_HANDLER(WM_COMMAND, OnCommand)
@@ -24,5 +24,8 @@ class CMainWnd : public CWindowImpl<CMainWnd>
         LRESULT OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled) ;
         LRESULT OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled) ; 
         LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled) ;
+    public :
+        void CreateTreeView(RECT &rc) ; 
+        void CreateListView(RECT &rc) ; 
 } ;
 
