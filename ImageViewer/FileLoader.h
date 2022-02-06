@@ -4,11 +4,13 @@ class CFileLoader
 { 
 	private :
 		CAtlList<CString> m_StringList ; 
-		CString m_path ; 
+		CWindow m_TreeView ; 
+		TVINSERTSTRUCT m_tvis ; 
 	public :
-		CFileLoader() ; 
+		CFileLoader(CWindow &TreeView) ; 
 		~CFileLoader() ; 
 	public :
-		void Load(HWND hWnd, CPath &CurrentPath) ; // control window.
+		bool IsImageFile(CString str) ; 
+		void Load(HWND hWnd, CPath &CurrentPath, HTREEITEM hTreeItem) ; // control window.
 } ;
 
