@@ -22,11 +22,11 @@ LRESULT CMainWnd::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, 
     RECT rc ; 
     GetClientRect(&rc) ; 
     rc.right = rc.left + 200 ; 
-    CreateTreeView(rc) ;
 
-    CFileLoader FileLoader ; 
+    CreateTreeView(rc) ;
+    CFileLoader FileLoader { m_TreeView } ; 
     CPath InitPath { _T("C:\\users") } ;
-    FileLoader.Load(m_TreeView.m_hWnd, InitPath) ; 
+    FileLoader.Load(m_TreeView.m_hWnd, InitPath, TVI_ROOT) ; 
 
     const DWORD LV_STYLE = WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | LVS_REPORT ;
     LVCOLUMN LvCol ;

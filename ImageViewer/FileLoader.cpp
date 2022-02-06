@@ -1,9 +1,12 @@
 #include "pch.h"
 #include "FileLoader.h"
 
-CFileLoader::CFileLoader() 
+CFileLoader::CFileLoader(CWindow &TreeView) 
+    : m_TreeView(TreeView) 
 {
-    m_path = "C:\\*" ; 
+    m_tvis.hParent = TVI_ROOT ; 
+    m_tvis.hInsertAfter = TVI_ROOT ; 
+    m_tvis.item.mask = TVIF_TEXT ; 
 }
 
 CFileLoader::~CFileLoader() 
@@ -11,11 +14,22 @@ CFileLoader::~CFileLoader()
 
 }
 
-void CFileLoader::Load(HWND hWnd, CPath &CurrentPath)
+bool CFileLoader::IsImageFile(CString str) 
+{
+    if((str.CompareNoCase(_T(".png"))) || (str.CompareNoCase(_T(".jpg"))))
+    {
+        return true ;
+    }
+    return false ; 
+}
+
+void CFileLoader::Load(HWND hWnd, CPath &CurrentPath, HTREEITEM hTreeItem)
 {
     WIN32_FIND_DATA FindFileData ; 
     CPath OriPath = CurrentPath ; 
     CurrentPath.Append(_T("*.*")) ; 
+    // Current Path : C:\\*.* 
+    // Origin Path : C:\\ 
     HANDLE hFind = FindFirstFile(CurrentPath, &FindFileData) ;  
     if(hFind == INVALID_HANDLE_VALUE)
     {
@@ -26,23 +40,18 @@ void CFileLoader::Load(HWND hWnd, CPath &CurrentPath)
         CString strFileName = FindFileData.cFileName ; 
         if((strFileName != _T(".")) && (strFileName != _T("..")))
         {
-            if((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
+            CPath Path { strFileName } ;
+            Path.Combine(OriPath, strFileName) ;
+            CString strExt = Path.GetExtension() ; 
+            if((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY || IsImageFile(strExt))
             {
-                CPath Path ;
-                Path.Combine(OriPath, strFileName) ;
-                Load(hWnd, Path) ;
-            }
-            else
-            {
-                CPath Path { strFileName } ;
-                CString strExt = Path.GetExtension() ; 
-                if((strExt.CompareNoCase(_T(".png")) == 0) || ((strExt.CompareNoCase(_T(".jpg")) == 0)))
-                {
-                    m_StringList.AddTail(CurrentPath) ; 
-                }
+                m_tvis.hParent = hTreeItem ; 
+                m_tvis.item.pszText = FindFileData.cFileName ; 
+                HTREEITEM PrevTreeItem = TreeView_InsertItem(m_TreeView, &m_tvis) ; 
+                Load(hWnd, Path, PrevTreeItem) ; // recursion call
             }
         }
-        if (!FindNextFile(hFind, &FindFileData))
+        if(!FindNextFile(hFind, &FindFileData))
         {
             break ;
         }
