@@ -42,6 +42,8 @@ void CFileLoader::LoadFiles(CPath &Path, HTREEITEM hParentItem)
         {
             if((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY || IsImageFile(FindFileData.cFileName))
             {
+                CurrentFileName.Append(FindFileData.cFileName) ; 
+                pItemAttributes->m_MyPath = CurrentFileName ; 
                 m_tvis.hParent = hParentItem ; 
                 m_tvis.item.pszText = FindFileData.cFileName ; 
                 m_tvis.item.lParam = reinterpret_cast<LPARAM>(pItemAttributes) ; 
