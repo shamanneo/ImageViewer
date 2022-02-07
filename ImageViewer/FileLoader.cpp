@@ -24,27 +24,27 @@ bool CFileLoader::IsImageFile(CString str)
     return false ; 
 }
 
-void CFileLoader::LoadFiles(CPath &Path) 
+void CFileLoader::LoadFiles(CPath &Path, HTREEITEM hParentItem) 
 {
     WIN32_FIND_DATA FindFileData ; 
-    CAutoPtr<ItemAttributes> spItemAttributes { new ItemAttributes } ; 
-    spItemAttributes->m_MyPath = Path ; 
-    Path.Append(_T("*.*")) ; 
-    HANDLE hFind = FindFirstFile(Path, &FindFileData) ;  
+    CPath TempPath = Path ; 
+    TempPath.Append(_T("*.*")) ; 
+    HANDLE hFind = FindFirstFile(TempPath, &FindFileData) ;  
     if(hFind == INVALID_HANDLE_VALUE)
     {
         return ;
     }
     while(true)
     {
-        CString strCurrentFileName = FindFileData.cFileName ; 
-        if((strCurrentFileName != _T(".")) && (strCurrentFileName != _T("..")))
+        ItemAttributes *pItemAttributes = new ItemAttributes ; 
+        CPath CurrentFileName { Path } ;
+        if(((StrCmpCW(FindFileData.cFileName, L".") != 0) && ((StrCmpCW(FindFileData.cFileName, L"..") != 0))))
         {
-            CPath FileName { strCurrentFileName } ;
-            if((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY || IsImageFile(FileName.GetExtension()))
+            if((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY || IsImageFile(FindFileData.cFileName))
             {
-                m_tvis.item.pszText = strCurrentFileName.GetBuffer() ; 
-                m_tvis.item.lParam = (LPARAM)spItemAttributes.m_p ; 
+                m_tvis.hParent = hParentItem ; 
+                m_tvis.item.pszText = FindFileData.cFileName ; 
+                m_tvis.item.lParam = reinterpret_cast<LPARAM>(pItemAttributes) ; 
                 TreeView_InsertItem(m_TreeView, &m_tvis) ; 
             }
         }

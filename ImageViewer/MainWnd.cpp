@@ -93,8 +93,21 @@ LRESULT CMainWnd::OnSelectedChanged(int /*idCtrl*/, LPNMHDR pNHDR, BOOL &/*bHand
     Item.pszText = szBuffer ; 
     Item.cchTextMax = _countof(szBuffer) ; 
     TreeView_GetItem(m_TreeView, &Item) ; 
-
     ItemAttributes *pItemAttributes = reinterpret_cast<ItemAttributes *>(Item.lParam) ; 
+    if(!pItemAttributes->m_bExpanded)
+    {
+        pItemAttributes->m_bExpanded = true ; 
+        CFileLoader FileLoader { m_TreeView } ; 
+        FileLoader.LoadFiles(pItemAttributes->m_MyPath, Item.hItem) ; 
+    }
+    return 0 ; 
+}
+
+LRESULT CMainWnd::OnDeleteItem(int /*idCtrl*/, LPNMHDR pNHDR, BOOL &/*bHandled*/)
+{
+    NMTREEVIEW *pNMTV = reinterpret_cast<NMTREEVIEW *>(pNHDR) ; 
+    ItemAttributes *pItemAttributes = reinterpret_cast<ItemAttributes *>(pNMTV->itemOld.lParam) ; 
+    delete pItemAttributes ; 
     return 0 ; 
 }
 

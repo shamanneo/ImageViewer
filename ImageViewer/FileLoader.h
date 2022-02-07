@@ -10,5 +10,5 @@ class CFileLoader
 		~CFileLoader() ; 
 	public :
 		bool IsImageFile(CString str) ;
-		void LoadFiles(CPath &Path) ; 
+		void LoadFiles(CPath &Path, HTREEITEM hParentItem = TVI_ROOT) ; 
 } ;
