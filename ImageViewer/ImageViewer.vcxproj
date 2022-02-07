@@ -148,7 +148,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="atlsupport.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="FileLoader.h" />
+    <ClInclude Include="ItemAttributes.h" />
     <ClInclude Include="MainApp.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="ImageViewer.h" />
@@ -159,6 +161,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileLoader.cpp" />
+    <ClCompile Include="ItemAttributes.cpp" />
     <ClCompile Include="MainApp.cpp" />
     <ClCompile Include="ImageViewer.cpp" />
     <ClCompile Include="MainWnd.cpp" />

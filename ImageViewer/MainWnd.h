@@ -1,4 +1,5 @@
 #pragma once
+#include "resource.h"
 
 class CMainWnd : public CWindowImpl<CMainWnd> 
 {
@@ -17,6 +18,7 @@ class CMainWnd : public CWindowImpl<CMainWnd>
             MESSAGE_HANDLER(WM_PAINT, OnPaint) 
             MESSAGE_HANDLER(WM_SIZE, OnSize) 
             MESSAGE_HANDLER(WM_DESTROY, OnDestroy) 
+            NOTIFY_HANDLER(IDC_MAIN_TREE_VIEW, TVN_SELCHANGED, OnSelectedChanged) 
         END_MSG_MAP() 
     public :
         LRESULT OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled) ;
@@ -24,6 +26,7 @@ class CMainWnd : public CWindowImpl<CMainWnd>
         LRESULT OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled) ;
         LRESULT OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled) ; 
         LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled) ;
+        LRESULT OnSelectedChanged(int idCtrl, LPNMHDR pNHDR, BOOL &bHandled) ; 
     public :
         void CreateTreeView(RECT &rc) ; 
         void CreateListView(RECT &rc) ; 

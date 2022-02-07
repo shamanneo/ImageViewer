@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "FileLoader.h"
+#include "ItemAttributes.h"
+#include "resource.h"
 #include "MainWnd.h"
 
 CMainWnd::CMainWnd()
@@ -26,13 +28,13 @@ LRESULT CMainWnd::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, 
     CreateTreeView(rc) ;
     CFileLoader FileLoader { m_TreeView } ; 
     CPath InitPath { _T("C:\\users") } ;
-    FileLoader.Load(m_TreeView.m_hWnd, InitPath, TVI_ROOT) ; 
+    
+    FileLoader.LoadFiles(InitPath) ; 
 
-    const DWORD LV_STYLE = WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | LVS_REPORT ;
     LVCOLUMN LvCol ;
     rc.left = rc.right + 10 ;
     rc.right = rc.left + 400 ;
-    m_ListView.Create(WC_LISTVIEW, m_hWnd, rc, NULL, LV_STYLE, WS_EX_CLIENTEDGE) ;
+    CreateListView(rc) ; 
 
     LvCol.mask = LVCF_TEXT | LVCF_WIDTH ;
 
@@ -81,27 +83,29 @@ LRESULT CMainWnd::OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/,
     return 0 ; 
 }
 
+LRESULT CMainWnd::OnSelectedChanged(int /*idCtrl*/, LPNMHDR pNHDR, BOOL &/*bHandled*/)
+{
+    TCHAR szBuffer[30] ; 
+    NMTREEVIEW *pNMTV = reinterpret_cast<NMTREEVIEW *>(pNHDR) ; 
+    TVITEM Item ;
+    Item.mask = TVIF_TEXT | TVIF_PARAM ; 
+    Item.hItem = pNMTV->itemNew.hItem ; 
+    Item.pszText = szBuffer ; 
+    Item.cchTextMax = _countof(szBuffer) ; 
+    TreeView_GetItem(m_TreeView, &Item) ; 
+
+    ItemAttributes *pItemAttributes = reinterpret_cast<ItemAttributes *>(Item.lParam) ; 
+    return 0 ; 
+}
+
 void CMainWnd::CreateTreeView(RECT &rc) 
 {
     const DWORD dwTVStyle = WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | TVS_HASLINES | TVS_HASBUTTONS | TVS_LINESATROOT ;
-    m_TreeView.Create(WC_TREEVIEW, m_hWnd, rc, NULL, dwTVStyle, WS_EX_CLIENTEDGE) ;
-
-    /*
-    HTREEITEM hTreeItem ; 
-    TVINSERTSTRUCT tvis ; 
-    tvis.hParent = TVI_ROOT ; 
-    tvis.hInsertAfter = TVI_ROOT ; 
-    tvis.item.mask = TVIF_TEXT ;
-    tvis.item.pszText = const_cast<TCHAR *>(_T("»çÁø")) ;
-    hTreeItem = TreeView_InsertItem(m_TreeView.m_hWnd, &tvis) ; 
-    tvis.hParent = hTreeItem ; 
-    tvis.item.pszText = const_cast<TCHAR *>(_T("Saved Pictures")) ;
-    hTreeItem = TreeView_InsertItem(m_TreeView.m_hWnd, &tvis) ; 
-    */
+    m_TreeView.Create(WC_TREEVIEW, m_hWnd, rc, NULL, dwTVStyle, WS_EX_CLIENTEDGE, IDC_MAIN_TREE_VIEW) ;
 }
 
 void CMainWnd::CreateListView(RECT &rc) 
 {
     const DWORD dwLVStyle = WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | LVS_REPORT ;
-    m_ListView.Create(WC_LISTVIEW, m_hWnd, rc, NULL, dwLVStyle, WS_EX_CLIENTEDGE) ; 
+    m_ListView.Create(WC_LISTVIEW, m_hWnd, rc, NULL, dwLVStyle, WS_EX_CLIENTEDGE, IDC_MAIN_LIST_VIEW) ;
 }
