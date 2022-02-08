@@ -2,8 +2,7 @@
 #include "ItemAttributes.h"
 #include "FileLoader.h"
 
-CFileLoader::CFileLoader(CWindow &TreeView) 
-    : m_TreeView(TreeView) 
+CFileLoader::CFileLoader() 
 {
     m_tvis.hParent = TVI_ROOT ; 
     m_tvis.hInsertAfter = TVI_ROOT ; 
@@ -24,7 +23,7 @@ bool CFileLoader::IsImageFile(CString str)
     return false ; 
 }
 
-void CFileLoader::LoadFiles(CPath &Path, HTREEITEM hParentItem) 
+void CFileLoader::LoadFiles(CWindow &TreeViewWnd, CWindow &ListViewWnd, CPath &Path, HTREEITEM hParentItem) 
 {
     WIN32_FIND_DATA FindFileData ; 
     CPath TempPath = Path ; 
@@ -40,8 +39,8 @@ void CFileLoader::LoadFiles(CPath &Path, HTREEITEM hParentItem)
         {
             if((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY || IsImageFile(FindFileData.cFileName))
             {
-                InsertTreeView(Path, FindFileData, hParentItem) ; 
-                InsertListView(Path, FindFileData, hParentItem) ; 
+                InsertTreeView(TreeViewWnd, Path, FindFileData, hParentItem) ; 
+                InsertListView(ListViewWnd, Path, FindFileData, hParentItem) ; 
             }
         }
         if(!FindNextFile(hFind, &FindFileData))
@@ -53,7 +52,7 @@ void CFileLoader::LoadFiles(CPath &Path, HTREEITEM hParentItem)
     return ; 
 }
 
-void CFileLoader::InsertTreeView(CPath &Path, WIN32_FIND_DATA &FindFileData, HTREEITEM &hParentItem) 
+void CFileLoader::InsertTreeView(CWindow &TreeViewWnd, CPath &Path, WIN32_FIND_DATA &FindFileData, HTREEITEM &hParentItem) 
 {
     CPath CurrentFileName { Path } ;
     ItemAttributes *pItemAttributes = new ItemAttributes ; 
@@ -62,10 +61,10 @@ void CFileLoader::InsertTreeView(CPath &Path, WIN32_FIND_DATA &FindFileData, HTR
     m_tvis.hParent = hParentItem ; 
     m_tvis.item.pszText = FindFileData.cFileName ; 
     m_tvis.item.lParam = reinterpret_cast<LPARAM>(pItemAttributes) ; 
-    TreeView_InsertItem(m_TreeView, &m_tvis) ; 
+    TreeView_InsertItem(TreeViewWnd, &m_tvis) ; 
 }
 
-void CFileLoader::InsertListView(CPath &Path, WIN32_FIND_DATA &FindFileData, HTREEITEM &hParentItem) 
+void CFileLoader::InsertListView(CWindow &ListViewWnd, CPath &Path, WIN32_FIND_DATA &FindFileData, HTREEITEM &hParentItem) 
 {
     return ; 
 }

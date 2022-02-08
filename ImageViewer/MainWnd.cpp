@@ -26,9 +26,9 @@ LRESULT CMainWnd::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, 
     rc.right = rc.left + 200 ; 
 
     CreateTreeView(rc) ;
-    CFileLoader FileLoader { m_TreeView } ; 
+    CFileLoader FileLoader ;
     CPath InitPath { _T("C:\\users") } ;
-    FileLoader.LoadFiles(InitPath) ; 
+    FileLoader.LoadFiles(m_TreeView, m_ListView, InitPath) ; 
     LVCOLUMN LvCol ;
     rc.left = rc.right + 10 ;
     rc.right = rc.left + 400 ;
@@ -99,8 +99,8 @@ LRESULT CMainWnd::OnSelectedChanged(int /*idCtrl*/, LPNMHDR pNHDR, BOOL &/*bHand
     if(!pItemAttributes->m_bExpanded)
     {
         pItemAttributes->m_bExpanded = true ; 
-        CFileLoader FileLoader { m_TreeView } ; 
-        FileLoader.LoadFiles(pItemAttributes->m_MyPath, Item.hItem) ; 
+        CFileLoader FileLoader ;
+        FileLoader.LoadFiles(m_TreeView, m_ListView, pItemAttributes->m_MyPath, Item.hItem) ; 
     }
     INT nCount = ListView_GetItemCount(m_ListView) ; 
     while(nCount--) 

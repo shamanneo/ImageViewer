@@ -19,8 +19,8 @@ class CMainWnd : public CWindowImpl<CMainWnd>
             MESSAGE_HANDLER(WM_SIZE, OnSize) 
             MESSAGE_HANDLER(WM_DESTROY, OnDestroy) 
             NOTIFY_HANDLER(IDC_MAIN_TREE_VIEW, TVN_SELCHANGED, OnSelectedChanged) 
-            NOTIFY_HANDLER(IDC_MAIN_TREE_VIEW, TVN_DELETEITEM, OnDeleteItem) ; 
-            NOTIFY_HANDLER(IDC_MAIN_LIST_VIEW, LVN_GETDISPINFO, OnGetDispInfo) ; 
+            NOTIFY_HANDLER(IDC_MAIN_TREE_VIEW, TVN_DELETEITEM, OnDeleteItem) 
+            NOTIFY_HANDLER(IDC_MAIN_LIST_VIEW, LVN_GETDISPINFO, OnGetDispInfo) 
         END_MSG_MAP() 
     public :
         LRESULT OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled) ;

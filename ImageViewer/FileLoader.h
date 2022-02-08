@@ -3,14 +3,13 @@
 class CFileLoader
 { 
 	private :
-		CWindow m_TreeView ; 
 		TVINSERTSTRUCT m_tvis ; 
 	public :
-		CFileLoader(CWindow &TreeView) ; 
+		CFileLoader() ; 
 		~CFileLoader() ; 
 	public :
 		bool IsImageFile(CString str) ;
-		void LoadFiles(CPath &Path, HTREEITEM hParentItem = TVI_ROOT) ; 
-		void InsertTreeView(CPath &Path, WIN32_FIND_DATA &FindFileData, HTREEITEM &hParentItem) ;
-		void InsertListView(CPath &Path, WIN32_FIND_DATA &FindFileData, HTREEITEM &hParentItem) ;
+		void LoadFiles(CWindow &TreeViewWnd, CWindow &ListViewWnd, CPath &Path, HTREEITEM hParentItem = TVI_ROOT) ; 
+		void InsertTreeView(CWindow &TreeViewWnd, CPath &Path, WIN32_FIND_DATA &FindFileData, HTREEITEM &hParentItem) ;
+		void InsertListView(CWindow &ListViewWnd, CPath &Path, WIN32_FIND_DATA &FindFileData, HTREEITEM &hParentItem) ;
 } ;
