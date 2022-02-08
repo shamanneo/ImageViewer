@@ -25,7 +25,8 @@ bool CFileLoader::IsImageFile(CString str)
 
 void CFileLoader::LoadFiles(CWindow &TreeViewWnd, CWindow &ListViewWnd, CPath &Path, HTREEITEM hParentItem) 
 {
-    WIN32_FIND_DATA FindFileData ; 
+    ClearListView(ListViewWnd) ; 
+    WIN32_FIND_DATA FindFileData ;
     CPath TempPath = Path ; 
     TempPath.Append(_T("*.*")) ; 
     HANDLE hFind = FindFirstFile(TempPath, &FindFileData) ;  
@@ -40,7 +41,7 @@ void CFileLoader::LoadFiles(CWindow &TreeViewWnd, CWindow &ListViewWnd, CPath &P
             if((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY || IsImageFile(FindFileData.cFileName))
             {
                 InsertTreeView(TreeViewWnd, Path, FindFileData, hParentItem) ; 
-                InsertListView(ListViewWnd, Path, FindFileData, hParentItem) ; 
+                InsertListView(ListViewWnd, Path, FindFileData) ; 
             }
         }
         if(!FindNextFile(hFind, &FindFileData))
@@ -62,9 +63,34 @@ void CFileLoader::InsertTreeView(CWindow &TreeViewWnd, CPath &Path, WIN32_FIND_D
     m_tvis.item.pszText = FindFileData.cFileName ; 
     m_tvis.item.lParam = reinterpret_cast<LPARAM>(pItemAttributes) ; 
     TreeView_InsertItem(TreeViewWnd, &m_tvis) ; 
+    return ; 
 }
 
-void CFileLoader::InsertListView(CWindow &ListViewWnd, CPath &Path, WIN32_FIND_DATA &FindFileData, HTREEITEM &hParentItem) 
+void CFileLoader::InsertListView(CWindow &ListViewWnd, CPath &Path, WIN32_FIND_DATA &FindFileData) 
 {
-    return ; 
+    WIN32_FIND_DATA *pFindFileData = new WIN32_FIND_DATA ;
+    CopyMemory(pFindFileData, &FindFileData, sizeof(FindFileData)) ; 
+    LVITEM lvI ; 
+    lvI.pszText = FindFileData.cFileName ; 
+    lvI.mask = LVIF_TEXT | LVIF_PARAM ; 
+    lvI.stateMask = 0 ; 
+    lvI.iSubItem = 0 ; 
+    lvI.state = 0 ; 
+    lvI.iItem = 0 ; 
+    lvI.iImage = 0 ; 
+    lvI.lParam = reinterpret_cast<LPARAM>(pFindFileData) ; 
+    INT n = ListView_InsertItem(ListViewWnd, &lvI) ; 
+    if(n == -1)
+    {
+        return ;
+    }
+    FILETIME FileTime = pFindFileData->ftLastAccessTime ; 
+    ListView_SetItemText(ListViewWnd, n, 1, const_cast<WCHAR *>(_T("ACV"))) ; 
+    ListView_SetItemText(ListViewWnd, n, 2, const_cast<WCHAR *>(_T("ACV"))) ; 
+    ListView_SetItemText(ListViewWnd, n, 3, const_cast<WCHAR *>(_T("ACV"))) ; 
+}
+
+void CFileLoader::ClearListView(CWindow &ListViewWnd)
+{
+    ListView_DeleteAllItems(ListViewWnd) ; 
 }
