@@ -36,18 +36,12 @@ void CFileLoader::LoadFiles(CPath &Path, HTREEITEM hParentItem)
     }
     while(true)
     {
-        ItemAttributes *pItemAttributes = new ItemAttributes ; 
-        CPath CurrentFileName { Path } ;
         if(((StrCmpCW(FindFileData.cFileName, L".") != 0) && ((StrCmpCW(FindFileData.cFileName, L"..") != 0))))
         {
             if((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY || IsImageFile(FindFileData.cFileName))
             {
-                CurrentFileName.Append(FindFileData.cFileName) ; 
-                pItemAttributes->m_MyPath = CurrentFileName ; 
-                m_tvis.hParent = hParentItem ; 
-                m_tvis.item.pszText = FindFileData.cFileName ; 
-                m_tvis.item.lParam = reinterpret_cast<LPARAM>(pItemAttributes) ; 
-                TreeView_InsertItem(m_TreeView, &m_tvis) ; 
+                InsertTreeView(Path, FindFileData, hParentItem) ; 
+                InsertListView(Path, FindFileData, hParentItem) ; 
             }
         }
         if(!FindNextFile(hFind, &FindFileData))
@@ -56,5 +50,22 @@ void CFileLoader::LoadFiles(CPath &Path, HTREEITEM hParentItem)
         }
     }
     FindClose(hFind) ; 
+    return ; 
+}
+
+void CFileLoader::InsertTreeView(CPath &Path, WIN32_FIND_DATA &FindFileData, HTREEITEM &hParentItem) 
+{
+    CPath CurrentFileName { Path } ;
+    ItemAttributes *pItemAttributes = new ItemAttributes ; 
+    CurrentFileName.Append(FindFileData.cFileName) ; 
+    pItemAttributes->m_MyPath = CurrentFileName ; 
+    m_tvis.hParent = hParentItem ; 
+    m_tvis.item.pszText = FindFileData.cFileName ; 
+    m_tvis.item.lParam = reinterpret_cast<LPARAM>(pItemAttributes) ; 
+    TreeView_InsertItem(m_TreeView, &m_tvis) ; 
+}
+
+void CFileLoader::InsertListView(CPath &Path, WIN32_FIND_DATA &FindFileData, HTREEITEM &hParentItem) 
+{
     return ; 
 }

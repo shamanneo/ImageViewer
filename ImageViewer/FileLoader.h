@@ -11,4 +11,6 @@ class CFileLoader
 	public :
 		bool IsImageFile(CString str) ;
 		void LoadFiles(CPath &Path, HTREEITEM hParentItem = TVI_ROOT) ; 
+		void InsertTreeView(CPath &Path, WIN32_FIND_DATA &FindFileData, HTREEITEM &hParentItem) ;
+		void InsertListView(CPath &Path, WIN32_FIND_DATA &FindFileData, HTREEITEM &hParentItem) ;
 } ;

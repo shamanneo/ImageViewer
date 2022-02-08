@@ -11,5 +11,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     int nResult = MainApp.Run(hInstance, nCmdShow) ;  
     CMainApp::Release() ;
 
+    _CrtDumpMemoryLeaks() ; 
     return nResult ; 
 }
