@@ -6,7 +6,16 @@ static CMainApp *g_pMainApp = nullptr ;
 
 CMainApp::CMainApp()
 {
+    RECT rc ; 
+    GetClientRect(m_MainWnd, &rc) ; 
+    rc.right = rc.left + 200 ; 
+    const DWORD dwTVStyle = WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | TVS_HASLINES | TVS_HASBUTTONS | TVS_LINESATROOT ;
+    m_TreeView.Create(WC_TREEVIEW, m_MainWnd, rc, NULL, dwTVStyle, WS_EX_CLIENTEDGE, IDC_MAIN_TREE_VIEW) ;
 
+    rc.left = rc.right + 10 ;
+    rc.right = rc.left + 400 ;
+    const DWORD dwLVStyle = WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | LVS_REPORT ;
+    m_ListView.Create(WC_LISTVIEW, m_MainWnd, rc, NULL, dwLVStyle, WS_EX_CLIENTEDGE, IDC_MAIN_LIST_VIEW) ;
 }
 
 CMainApp::~CMainApp()
