@@ -4,5 +4,5 @@
 #include <atlbase.h>
 #include <atlwin.h>
 #include <atlstr.h>
-#include <atlcoll.h>
+#include <atltime.h>
 #include <atlpath.h>

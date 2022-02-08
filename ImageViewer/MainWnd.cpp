@@ -49,7 +49,7 @@ LRESULT CMainWnd::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, 
 
     CFileLoader FileLoader ;
     CPath InitPath { _T("C:\\users") } ;
-    FileLoader.LoadFiles(m_TreeView, m_ListView, InitPath) ; 
+    FileLoader.LoadFiles(m_TreeView, m_ListView, InitPath, TVI_ROOT) ; 
     return 0 ; 
 }
 
@@ -83,6 +83,7 @@ LRESULT CMainWnd::OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/,
 LRESULT CMainWnd::OnSelectedChanged(int /*idCtrl*/, LPNMHDR pNHDR, BOOL &/*bHandled*/)
 {
     TCHAR szBuffer[30] ; 
+    CFileLoader FileLoader ;
     NMTREEVIEW *pNMTV = reinterpret_cast<NMTREEVIEW *>(pNHDR) ; 
     TVITEM Item ;
     Item.mask = TVIF_TEXT | TVIF_PARAM ; 
@@ -91,12 +92,7 @@ LRESULT CMainWnd::OnSelectedChanged(int /*idCtrl*/, LPNMHDR pNHDR, BOOL &/*bHand
     Item.cchTextMax = _countof(szBuffer) ; 
     TreeView_GetItem(m_TreeView, &Item) ; 
     ItemAttributes *pItemAttributes = reinterpret_cast<ItemAttributes *>(Item.lParam) ; 
-    if(!pItemAttributes->m_bExpanded)
-    {
-        pItemAttributes->m_bExpanded = true ; 
-        CFileLoader FileLoader ;
-        FileLoader.LoadFiles(m_TreeView, m_ListView, pItemAttributes->m_MyPath, Item.hItem) ; 
-    }
+    FileLoader.LoadFiles(m_TreeView, m_ListView, pItemAttributes->m_MyPath, Item.hItem) ; 
     return 0 ; 
 }
 

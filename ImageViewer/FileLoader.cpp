@@ -25,7 +25,7 @@ bool CFileLoader::IsImageFile(CString str)
 
 void CFileLoader::LoadFiles(CWindow &TreeViewWnd, CWindow &ListViewWnd, CPath &Path, HTREEITEM hParentItem) 
 {
-    ClearListView(ListViewWnd) ; 
+    ListView_DeleteAllItems(ListViewWnd) ; 
     WIN32_FIND_DATA FindFileData ;
     CPath TempPath = Path ; 
     TempPath.Append(_T("*.*")) ; 
@@ -41,7 +41,7 @@ void CFileLoader::LoadFiles(CWindow &TreeViewWnd, CWindow &ListViewWnd, CPath &P
             if((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY || IsImageFile(FindFileData.cFileName))
             {
                 InsertTreeView(TreeViewWnd, Path, FindFileData, hParentItem) ; 
-                InsertListView(ListViewWnd, Path, FindFileData) ; 
+                InsertListView(ListViewWnd, FindFileData) ; 
             }
         }
         if(!FindNextFile(hFind, &FindFileData))
@@ -66,7 +66,7 @@ void CFileLoader::InsertTreeView(CWindow &TreeViewWnd, CPath &Path, WIN32_FIND_D
     return ; 
 }
 
-void CFileLoader::InsertListView(CWindow &ListViewWnd, CPath &Path, WIN32_FIND_DATA &FindFileData) 
+void CFileLoader::InsertListView(CWindow &ListViewWnd, WIN32_FIND_DATA &FindFileData) 
 {
     WIN32_FIND_DATA *pFindFileData = new WIN32_FIND_DATA ;
     CopyMemory(pFindFileData, &FindFileData, sizeof(FindFileData)) ; 
@@ -85,12 +85,10 @@ void CFileLoader::InsertListView(CWindow &ListViewWnd, CPath &Path, WIN32_FIND_D
         return ;
     }
     FILETIME FileTime = pFindFileData->ftLastAccessTime ; 
-    ListView_SetItemText(ListViewWnd, n, 1, const_cast<WCHAR *>(_T("ACV"))) ; 
-    ListView_SetItemText(ListViewWnd, n, 2, const_cast<WCHAR *>(_T("ACV"))) ; 
-    ListView_SetItemText(ListViewWnd, n, 3, const_cast<WCHAR *>(_T("ACV"))) ; 
+    CTime time { FileTime } ; 
+    CString str = time.Format(_T("%Y-%m-%d %H:%M")) ; 
+    ListView_SetItemText(ListViewWnd, n, 1, str.GetBuffer()) ; 
+    ListView_SetItemText(ListViewWnd, n, 2, const_cast<WCHAR *>(_T("TBD"))) ; 
+    ListView_SetItemText(ListViewWnd, n, 3, const_cast<WCHAR *>(_T("TBD"))) ; 
 }
 
-void CFileLoader::ClearListView(CWindow &ListViewWnd)
-{
-    ListView_DeleteAllItems(ListViewWnd) ; 
-}
