@@ -48,8 +48,10 @@ LRESULT CMainWnd::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, 
     ListView_InsertColumn(m_ListView.m_hWnd, 3, &LvCol) ; 
 
     CFileLoader FileLoader ;
+    ItemAttributes InitItemAttributes ;
     CPath InitPath { _T("C:\\users") } ;
-    FileLoader.LoadFiles(m_TreeView, m_ListView, InitPath, TVI_ROOT) ; 
+    InitItemAttributes.m_MyPath = InitPath ; 
+    FileLoader.LoadFiles(m_TreeView, m_ListView, &InitItemAttributes, TVI_ROOT) ; 
     return 0 ; 
 }
 
@@ -92,7 +94,7 @@ LRESULT CMainWnd::OnSelectedChanged(int /*idCtrl*/, LPNMHDR pNHDR, BOOL &/*bHand
     Item.cchTextMax = _countof(szBuffer) ; 
     TreeView_GetItem(m_TreeView, &Item) ; 
     ItemAttributes *pItemAttributes = reinterpret_cast<ItemAttributes *>(Item.lParam) ; 
-    FileLoader.LoadFiles(m_TreeView, m_ListView, pItemAttributes->m_MyPath, Item.hItem) ; 
+    FileLoader.LoadFiles(m_TreeView, m_ListView, pItemAttributes, Item.hItem) ; 
     return 0 ; 
 }
 

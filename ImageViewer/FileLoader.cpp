@@ -1,5 +1,4 @@
 #include "pch.h"
-#include "ItemAttributes.h"
 #include "FileLoader.h"
 
 CFileLoader::CFileLoader() 
@@ -23,11 +22,11 @@ bool CFileLoader::IsImageFile(CString str)
     return false ; 
 }
 
-void CFileLoader::LoadFiles(CWindow &TreeViewWnd, CWindow &ListViewWnd, CPath &Path, HTREEITEM hParentItem) 
+void CFileLoader::LoadFiles(CWindow &TreeViewWnd, CWindow &ListViewWnd, ItemAttributes *pItemAttributes, HTREEITEM hParentItem) 
 {
     ListView_DeleteAllItems(ListViewWnd) ; 
     WIN32_FIND_DATA FindFileData ;
-    CPath TempPath = Path ; 
+    CPath TempPath = pItemAttributes->m_MyPath ; 
     TempPath.Append(_T("*.*")) ; 
     HANDLE hFind = FindFirstFile(TempPath, &FindFileData) ;  
     if(hFind == INVALID_HANDLE_VALUE)
@@ -40,7 +39,10 @@ void CFileLoader::LoadFiles(CWindow &TreeViewWnd, CWindow &ListViewWnd, CPath &P
         {
             if((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY || IsImageFile(FindFileData.cFileName))
             {
-                InsertTreeView(TreeViewWnd, Path, FindFileData, hParentItem) ; 
+                if(pItemAttributes->m_bExpanded == false)
+                {
+                    InsertTreeView(TreeViewWnd, pItemAttributes->m_MyPath, FindFileData, hParentItem) ; 
+                }
                 InsertListView(ListViewWnd, FindFileData) ; 
             }
         }
@@ -49,6 +51,7 @@ void CFileLoader::LoadFiles(CWindow &TreeViewWnd, CWindow &ListViewWnd, CPath &P
             break ;
         }
     }
+    pItemAttributes->m_bExpanded = true ; 
     FindClose(hFind) ; 
     return ; 
 }
