@@ -13,9 +13,9 @@ CFileLoader::~CFileLoader()
 
 }
 
-bool CFileLoader::IsImageFile(CString str) 
+bool CFileLoader::IsImageFile(CString &str) 
 {
-    if((str.CompareNoCase(_T(".png"))) || (str.CompareNoCase(_T(".jpg"))))
+    if((str.CompareNoCase(_T(".png")) == 0) || (str.CompareNoCase(_T(".jpg")) == 0))
     {
         return true ;
     }
@@ -26,9 +26,9 @@ void CFileLoader::LoadFiles(CWindow &TreeViewWnd, CWindow &ListViewWnd, ItemAttr
 {
     ListView_DeleteAllItems(ListViewWnd) ; 
     WIN32_FIND_DATA FindFileData ;
-    CPath TempPath = pItemAttributes->m_MyPath ; 
-    TempPath.Append(_T("*.*")) ; 
-    HANDLE hFind = FindFirstFile(TempPath, &FindFileData) ;  
+    CPath path = pItemAttributes->m_MyPath ; 
+    path.Append(_T("*.*")) ; 
+    HANDLE hFind = FindFirstFile(path, &FindFileData) ;  
     if(hFind == INVALID_HANDLE_VALUE)
     {
         return ;
@@ -37,12 +37,14 @@ void CFileLoader::LoadFiles(CWindow &TreeViewWnd, CWindow &ListViewWnd, ItemAttr
     {
         if(((StrCmpCW(FindFileData.cFileName, L".") != 0) && ((StrCmpCW(FindFileData.cFileName, L"..") != 0))))
         {
-            if((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY || IsImageFile(FindFileData.cFileName))
+            CPath TempPath = FindFileData.cFileName ; 
+            CString strExtension = TempPath.GetExtension() ; 
+            if((pItemAttributes->m_bExpanded == false) && ((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY))
             {
-                if(pItemAttributes->m_bExpanded == false)
-                {
-                    InsertTreeView(TreeViewWnd, pItemAttributes->m_MyPath, FindFileData, hParentItem) ; 
-                }
+                InsertTreeView(TreeViewWnd, pItemAttributes->m_MyPath, FindFileData, hParentItem) ; 
+            }
+            if(IsImageFile(strExtension))
+            {
                 InsertListView(ListViewWnd, FindFileData) ; 
             }
         }
@@ -87,7 +89,8 @@ void CFileLoader::InsertListView(CWindow &ListViewWnd, WIN32_FIND_DATA &FindFile
     {
         return ;
     }
-    FILETIME FileTime = pFindFileData->ftLastAccessTime ; 
+    FILETIME FileTime ;
+    CopyMemory(&FileTime, &pFindFileData->ftLastWriteTime, sizeof(FileTime)) ; 
     CTime time { FileTime } ; 
     CString str = time.Format(_T("%Y-%m-%d %H:%M")) ; 
     ListView_SetItemText(ListViewWnd, n, 1, str.GetBuffer()) ; 
