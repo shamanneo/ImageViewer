@@ -20,6 +20,7 @@ class CMainWnd : public CWindowImpl<CMainWnd>
             MESSAGE_HANDLER(WM_DESTROY, OnDestroy) 
             NOTIFY_HANDLER(IDC_MAIN_TREE_VIEW, TVN_SELCHANGED, OnSelectedChanged) 
             NOTIFY_HANDLER(IDC_MAIN_TREE_VIEW, TVN_DELETEITEM, OnDeleteTItem) 
+            NOTIFY_HANDLER(IDC_MAIN_LIST_VIEW, NM_CLICK , OnClicked) 
             NOTIFY_HANDLER(IDC_MAIN_LIST_VIEW, LVN_DELETEITEM, OnDeleteLItem) 
         END_MSG_MAP() 
     public :
@@ -31,9 +32,11 @@ class CMainWnd : public CWindowImpl<CMainWnd>
         LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled) ;
         LRESULT OnSelectedChanged(int idCtrl, LPNMHDR pNHDR, BOOL &bHandled) ; 
         LRESULT OnDeleteTItem(int idCtrl, LPNMHDR pNHDR, BOOL &bHandled) ; 
+        LRESULT OnClicked(int idCtrl, LPNMHDR pNHDR, BOOL &bHandled) ; 
         LRESULT OnDeleteLItem(int idCtrl, LPNMHDR pNHDR, BOOL &bHandled) ; 
     public :
         void CreateTreeView(RECT &rc) ; 
         void CreateListView(RECT &rc) ; 
+        void Draw(CPath &path) ; 
 } ;
 

@@ -45,7 +45,7 @@ void CFileLoader::LoadFiles(CWindow &TreeViewWnd, CWindow &ListViewWnd, ItemAttr
             }
             if(IsImageFile(strExtension))
             {
-                InsertListView(ListViewWnd, FindFileData) ; 
+                InsertListView(ListViewWnd, pItemAttributes->m_MyPath, FindFileData) ; 
             }
         }
         if(!FindNextFile(hFind, &FindFileData))
@@ -71,10 +71,11 @@ void CFileLoader::InsertTreeView(CWindow &TreeViewWnd, CPath &Path, WIN32_FIND_D
     return ; 
 }
 
-void CFileLoader::InsertListView(CWindow &ListViewWnd, WIN32_FIND_DATA &FindFileData) 
+void CFileLoader::InsertListView(CWindow &ListViewWnd, CPath &Path, WIN32_FIND_DATA &FindFileData) 
 {
-    WIN32_FIND_DATA *pFindFileData = new WIN32_FIND_DATA ;
-    CopyMemory(pFindFileData, &FindFileData, sizeof(FindFileData)) ; 
+    ItemAttributes *pItemAttributes = new ItemAttributes ; 
+    pItemAttributes->m_MyPath = Path ;
+    CopyMemory(&pItemAttributes->m_FindFileData, &FindFileData, sizeof(FindFileData)) ; 
     LVITEM lvI ; 
     lvI.pszText = FindFileData.cFileName ; 
     lvI.mask = LVIF_TEXT | LVIF_PARAM ; 
@@ -83,14 +84,14 @@ void CFileLoader::InsertListView(CWindow &ListViewWnd, WIN32_FIND_DATA &FindFile
     lvI.state = 0 ; 
     lvI.iItem = 0 ; 
     lvI.iImage = 0 ; 
-    lvI.lParam = reinterpret_cast<LPARAM>(pFindFileData) ; 
+    lvI.lParam = reinterpret_cast<LPARAM>(pItemAttributes) ; 
     INT n = ListView_InsertItem(ListViewWnd, &lvI) ; 
     if(n == -1)
     {
         return ;
     }
     FILETIME FileTime ;
-    CopyMemory(&FileTime, &pFindFileData->ftLastWriteTime, sizeof(FileTime)) ; 
+    CopyMemory(&FileTime, &FindFileData.ftLastWriteTime, sizeof(FileTime)) ; 
     CTime time { FileTime } ; 
     CString str = time.Format(_T("%Y-%m-%d %H:%M")) ; 
     ListView_SetItemText(ListViewWnd, n, 1, str.GetBuffer()) ; 

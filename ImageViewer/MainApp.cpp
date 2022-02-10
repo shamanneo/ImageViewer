@@ -6,12 +6,13 @@ static CMainApp *g_pMainApp = nullptr ;
 
 CMainApp::CMainApp()
 {
-
+    Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+    Gdiplus::GdiplusStartup(&m_gdiplusToken, &gdiplusStartupInput, NULL) ; 
 }
 
 CMainApp::~CMainApp()
 {
-
+    Gdiplus::GdiplusShutdown(m_gdiplusToken) ; 
 }
 
 int CMainApp::Run(HINSTANCE hInstance, int nCmdShow)

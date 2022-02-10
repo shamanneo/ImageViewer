@@ -10,5 +10,9 @@
 // add headers that you want to pre-compile here
 #include "framework.h"
 #include "atlsupport.h"
+#pragma warning ( disable : 4458 ) 
+#include <gdiplus.h>
+#pragma warning ( default : 4458 ) 
+#pragma comment (lib,"Gdiplus.lib")
 
 #endif //PCH_H

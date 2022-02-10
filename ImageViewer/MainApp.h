@@ -7,6 +7,7 @@ class CMainApp
         CMainWnd m_MainWnd ; 
         CWindow m_TreeView ; 
         CWindow m_ListView ; 
+        ULONG_PTR m_gdiplusToken ; 
     public :
         CMainApp() ; 
         ~CMainApp() ; 

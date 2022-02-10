@@ -106,11 +106,28 @@ LRESULT CMainWnd::OnDeleteTItem(int /*idCtrl*/, LPNMHDR pNHDR, BOOL &/*bHandled*
     return 0 ; 
 }
 
+LRESULT CMainWnd::OnClicked(int /*idCtrl*/, LPNMHDR pNHDR, BOOL &/*bHandled*/)
+{
+    NMLISTVIEW *pNMLV = reinterpret_cast<NMLISTVIEW *>(pNHDR) ; 
+    LVITEM Item ; 
+    Item.mask = LVIF_PARAM ; 
+    Item.iSubItem = 0 ; 
+    Item.state = 0 ; 
+    Item.iItem = 0 ; 
+    Item.iImage = 0 ; 
+    ListView_GetItem(m_ListView, &Item) ; 
+    ItemAttributes *pItemAttributes = reinterpret_cast<ItemAttributes *>(Item.lParam) ; 
+    CPath path ;
+    path.Combine(pItemAttributes->m_MyPath, pItemAttributes->m_FindFileData.cFileName) ; 
+    Draw(path) ; 
+    return 0 ; 
+}
+
 LRESULT CMainWnd::OnDeleteLItem(int /*idCtrl*/, LPNMHDR pNHDR, BOOL &/*bHandled*/)
 {
     NMLISTVIEW *pNMLV = reinterpret_cast<NMLISTVIEW *>(pNHDR) ; 
-    WIN32_FIND_DATA *pFindFileData = reinterpret_cast<WIN32_FIND_DATA *>(pNMLV->lParam) ; 
-    delete pFindFileData ; 
+    ItemAttributes *pItemAttributes = reinterpret_cast<ItemAttributes *>(pNMLV->lParam) ; 
+    delete pItemAttributes ; 
     return 0 ; 
 }
 
@@ -126,4 +143,12 @@ void CMainWnd::CreateListView(RECT &rc)
     const DWORD dwLVStyle = WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | LVS_REPORT ;
     m_ListView.Create(WC_LISTVIEW, m_hWnd, rc, NULL, dwLVStyle, WS_EX_CLIENTEDGE, IDC_MAIN_LIST_VIEW) ;
     return ; 
+}
+
+void CMainWnd::Draw(CPath &path) 
+{
+    Gdiplus::Graphics grfx {m_hWnd } ; 
+    Gdiplus::Image img { path } ; 
+    grfx.DrawImage(&img, 1000, 1000) ; 
+    return ;
 }
