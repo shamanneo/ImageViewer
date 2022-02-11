@@ -95,7 +95,5 @@ void CFileLoader::InsertListView(CWindow &ListViewWnd, CPath &Path, WIN32_FIND_D
     CTime time { FileTime } ; 
     CString str = time.Format(_T("%Y-%m-%d %H:%M")) ; 
     ListView_SetItemText(ListViewWnd, n, 1, str.GetBuffer()) ; 
-    ListView_SetItemText(ListViewWnd, n, 2, const_cast<WCHAR *>(_T("TBD"))) ; 
-    ListView_SetItemText(ListViewWnd, n, 3, const_cast<WCHAR *>(_T("TBD"))) ; 
 }
 

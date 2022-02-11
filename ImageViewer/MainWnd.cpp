@@ -26,7 +26,7 @@ LRESULT CMainWnd::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, 
     rc.right = rc.left + 200 ; 
     CreateTreeView(rc) ;
     rc.left = rc.right + 10 ;
-    rc.right = rc.left + 400 ;
+    rc.right = rc.left + 300 ;
     CreateListView(rc) ; 
     LVCOLUMN LvCol ;
     LvCol.mask = LVCF_TEXT | LVCF_WIDTH ;
@@ -36,16 +36,8 @@ LRESULT CMainWnd::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, 
     ListView_InsertColumn(m_ListView.m_hWnd, 0, &LvCol) ;
 
     LvCol.pszText = const_cast<TCHAR *>(_T("수정한 날짜")) ; 
-    LvCol.cx = 120 ; 
+    LvCol.cx = 146 ; 
     ListView_InsertColumn(m_ListView.m_hWnd, 1, &LvCol) ; 
-
-    LvCol.pszText = const_cast<TCHAR *>(_T("유형")) ; 
-    LvCol.cx = 76 ; 
-    ListView_InsertColumn(m_ListView.m_hWnd, 2, &LvCol) ; 
-
-    LvCol.pszText = const_cast<TCHAR *>(_T("크기")) ; 
-    LvCol.cx = 50 ; 
-    ListView_InsertColumn(m_ListView.m_hWnd, 3, &LvCol) ; 
 
     CFileLoader FileLoader ;
     ItemAttributes InitItemAttributes ;
@@ -71,7 +63,7 @@ LRESULT CMainWnd::OnSize(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BO
     rc.right = rc.left + 200 ; 
     ::SetWindowPos(m_TreeView, NULL, 0, 0, rc.right - rc.left, rc.bottom - rc.top, SWP_SHOWWINDOW) ; 
     rc.left = rc.right + 10 ;
-    rc.right = rc.left + 400 ;
+    rc.right = rc.left + 300 ;
     ::SetWindowPos(m_ListView, NULL, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, SWP_SHOWWINDOW) ; 
     return 0 ; 
 }
@@ -106,15 +98,14 @@ LRESULT CMainWnd::OnDeleteTItem(int /*idCtrl*/, LPNMHDR pNHDR, BOOL &/*bHandled*
     return 0 ; 
 }
 
-LRESULT CMainWnd::OnClicked(int /*idCtrl*/, LPNMHDR pNHDR, BOOL &/*bHandled*/)
+LRESULT CMainWnd::OnItemChanged(int /*idCtrl*/, LPNMHDR pNHDR, BOOL &/*bHandled*/)
 {
-    NMLISTVIEW *pNMLV = reinterpret_cast<NMLISTVIEW *>(pNHDR) ; 
     LVITEM Item ; 
     Item.mask = LVIF_PARAM ; 
     Item.iSubItem = 0 ; 
     Item.state = 0 ; 
-    Item.iItem = 0 ; 
     Item.iImage = 0 ; 
+    Item.iItem = 0 ;
     ListView_GetItem(m_ListView, &Item) ; 
     ItemAttributes *pItemAttributes = reinterpret_cast<ItemAttributes *>(Item.lParam) ; 
     CPath path ;
@@ -147,8 +138,11 @@ void CMainWnd::CreateListView(RECT &rc)
 
 void CMainWnd::Draw(CPath &path) 
 {
-    Gdiplus::Graphics grfx {m_hWnd } ; 
+    Gdiplus::Graphics grfx { m_hWnd } ; 
     Gdiplus::Image img { path } ; 
-    grfx.DrawImage(&img, 1000, 1000) ; 
+    if(grfx.DrawImage(&img, 700, 0, 400, 400) != 0) 
+    {
+        ATLASSERT(0) ; 
+    }
     return ;
 }
