@@ -28,6 +28,9 @@ LRESULT CMainWnd::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, 
     rc.left = rc.right + 10 ;
     rc.right = rc.left + 300 ;
     CreateListView(rc) ; 
+    GetClientRect(&rc) ; 
+    rc.left += rc.right / 2 ; 
+    DWORD err = GetLastError() ; 
     LVCOLUMN LvCol ;
     LvCol.mask = LVCF_TEXT | LVCF_WIDTH ;
 
@@ -100,12 +103,12 @@ LRESULT CMainWnd::OnDeleteTItem(int /*idCtrl*/, LPNMHDR pNHDR, BOOL &/*bHandled*
 
 LRESULT CMainWnd::OnItemChanged(int /*idCtrl*/, LPNMHDR pNHDR, BOOL &/*bHandled*/)
 {
+    NMLISTVIEW *pNMLV = reinterpret_cast<NMLISTVIEW *>(pNHDR) ; 
     LVITEM Item ; 
     Item.mask = LVIF_PARAM ; 
     Item.iSubItem = 0 ; 
     Item.state = 0 ; 
-    Item.iImage = 0 ; 
-    Item.iItem = 0 ;
+    Item.iItem = pNMLV->iItem ; 
     ListView_GetItem(m_ListView, &Item) ; 
     ItemAttributes *pItemAttributes = reinterpret_cast<ItemAttributes *>(Item.lParam) ; 
     CPath path ;
@@ -140,7 +143,9 @@ void CMainWnd::Draw(CPath &path)
 {
     Gdiplus::Graphics grfx { m_hWnd } ; 
     Gdiplus::Image img { path } ; 
-    if(grfx.DrawImage(&img, 700, 0, 400, 400) != 0) 
+    INT nWidth = img.GetWidth() / 3 ; 
+    INT nHeight = img.GetHeight() / 3 ; 
+    if(grfx.DrawImage(&img, 600, 0, nWidth, nHeight) != 0) 
     {
         ATLASSERT(0) ; 
     }

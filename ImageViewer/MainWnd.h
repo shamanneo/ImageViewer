@@ -1,16 +1,18 @@
 #pragma once
 #include "resource.h"
+#include "ImageWnd.h"
 
 class CMainWnd : public CWindowImpl<CMainWnd> 
 {
     private :
         CWindow m_TreeView ;     
         CWindow m_ListView ;
+        CImageWnd m_ImageWnd ; 
     public :
         CMainWnd() ; 
         ~CMainWnd() ; 
     public :
-        DECLARE_WND_CLASS(_T("ImageViwer"))
+        DECLARE_WND_CLASS(_T("ImageViewer"))
 
         BEGIN_MSG_MAP(CMainWnd)
             MESSAGE_HANDLER(WM_COMMAND, OnCommand)

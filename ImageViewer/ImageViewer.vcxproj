@@ -150,6 +150,7 @@
     <ClInclude Include="atlsupport.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="FileLoader.h" />
+    <ClInclude Include="ImageWnd.h" />
     <ClInclude Include="ItemAttributes.h" />
     <ClInclude Include="MainApp.h" />
     <ClInclude Include="framework.h" />
@@ -161,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileLoader.cpp" />
+    <ClCompile Include="ImageWnd.cpp" />
     <ClCompile Include="ItemAttributes.cpp" />
     <ClCompile Include="MainApp.cpp" />
     <ClCompile Include="ImageViewer.cpp" />
