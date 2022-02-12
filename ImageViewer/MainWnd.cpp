@@ -29,11 +29,12 @@ LRESULT CMainWnd::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, 
     rc.right = rc.left + 300 ;
     CreateListView(rc) ; 
     GetClientRect(&rc) ; 
-    rc.left += rc.right / 2 ; 
+    rc.left += rc.right / 2 - 200 ;
+
+    m_ImageWnd.Create(m_hWnd, rc, NULL, WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, WS_EX_CLIENTEDGE) ; 
     DWORD err = GetLastError() ; 
     LVCOLUMN LvCol ;
     LvCol.mask = LVCF_TEXT | LVCF_WIDTH ;
-
     LvCol.pszText = const_cast<TCHAR *>(_T("¿Ã∏ß")) ;
     LvCol.cx = 150 ;
     ListView_InsertColumn(m_ListView.m_hWnd, 0, &LvCol) ;
@@ -104,16 +105,19 @@ LRESULT CMainWnd::OnDeleteTItem(int /*idCtrl*/, LPNMHDR pNHDR, BOOL &/*bHandled*
 LRESULT CMainWnd::OnItemChanged(int /*idCtrl*/, LPNMHDR pNHDR, BOOL &/*bHandled*/)
 {
     NMLISTVIEW *pNMLV = reinterpret_cast<NMLISTVIEW *>(pNHDR) ; 
-    LVITEM Item ; 
-    Item.mask = LVIF_PARAM ; 
-    Item.iSubItem = 0 ; 
-    Item.state = 0 ; 
-    Item.iItem = pNMLV->iItem ; 
-    ListView_GetItem(m_ListView, &Item) ; 
-    ItemAttributes *pItemAttributes = reinterpret_cast<ItemAttributes *>(Item.lParam) ; 
-    CPath path ;
-    path.Combine(pItemAttributes->m_MyPath, pItemAttributes->m_FindFileData.cFileName) ; 
-    Draw(path) ; 
+    if(pNMLV->uOldState == 0)
+    {
+        LVITEM Item ; 
+        Item.mask = LVIF_PARAM ; 
+        Item.iSubItem = 0 ; 
+        Item.state = 0 ; 
+        Item.iItem = pNMLV->iItem ; 
+        ListView_GetItem(m_ListView, &Item) ; 
+        ItemAttributes *pItemAttributes = reinterpret_cast<ItemAttributes *>(Item.lParam) ; 
+        CPath path ;
+        path.Combine(pItemAttributes->m_MyPath, pItemAttributes->m_FindFileData.cFileName) ; 
+        Draw(path) ; 
+    }
     return 0 ; 
 }
 
@@ -141,11 +145,14 @@ void CMainWnd::CreateListView(RECT &rc)
 
 void CMainWnd::Draw(CPath &path) 
 {
+    ::InvalidateRect(m_ImageWnd, nullptr, true) ;
+    ::UpdateWindow(m_ImageWnd) ; 
+
     Gdiplus::Graphics grfx { m_hWnd } ; 
     Gdiplus::Image img { path } ; 
     INT nWidth = img.GetWidth() / 3 ; 
     INT nHeight = img.GetHeight() / 3 ; 
-    if(grfx.DrawImage(&img, 600, 0, nWidth, nHeight) != 0) 
+    if(grfx.DrawImage(&img, 600, 10, nWidth, nHeight) != 0) 
     {
         ATLASSERT(0) ; 
     }
