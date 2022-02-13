@@ -5,8 +5,7 @@ class CMainApp
 {
     private :
         CMainWnd m_MainWnd ; 
-        CWindow m_TreeView ; 
-        CWindow m_ListView ; 
+        CPath m_FileName ; 
         ULONG_PTR m_gdiplusToken ; 
     public :
         CMainApp() ; 
@@ -17,33 +16,21 @@ class CMainApp
         static CMainApp &GetInstance() ; 
         static void Release() ; 
     public :
-        CWindow &GetTreeViewWnd() ; 
-        CWindow &GetListViewWnd() ; 
+        CPath &GetFileName() ;
     public :
-        void SetTreeViewWnd(CWindow &TreeView) ; 
-        void SetListViewWnd(CWindow &ListView) ; 
+        void SetFileName(CPath &Path) ; 
 } ; 
 
 //      getter
 
-inline CWindow &CMainApp::GetTreeViewWnd() 
+inline CPath &CMainApp::GetFileName()  
 {
-    return m_TreeView ; 
+    return m_FileName ; 
 }
 
-inline CWindow &CMainApp::GetListViewWnd() 
-{
-    return m_ListView ; 
-}
+//      setter 
 
-//      setter
-
-inline void CMainApp::SetTreeViewWnd(CWindow &TreeView)
+inline void CMainApp::SetFileName(CPath &Path)
 {
-    m_TreeView = TreeView ; 
-}
-
-inline void CMainApp::SetListViewWnd(CWindow &ListView)
-{
-    m_ListView = ListView ; 
+    m_FileName = Path ; 
 }

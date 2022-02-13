@@ -2,6 +2,7 @@
 #include "FileLoader.h"
 #include "ItemAttributes.h"
 #include "resource.h"
+#include "MainApp.h"
 #include "MainWnd.h"
 
 CMainWnd::CMainWnd()
@@ -23,16 +24,16 @@ LRESULT CMainWnd::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, 
 {
     RECT rc ; 
     GetClientRect(&rc) ; 
+    LONG end = rc.right ; 
     rc.right = rc.left + 200 ; 
     CreateTreeView(rc) ;
     rc.left = rc.right + 10 ;
     rc.right = rc.left + 300 ;
     CreateListView(rc) ; 
-    GetClientRect(&rc) ; 
-    rc.left += rc.right / 2 - 200 ;
-
+    rc.left = rc.right + 10 ;
+    rc.right = end - 10 ; 
     m_ImageWnd.Create(m_hWnd, rc, NULL, WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, WS_EX_CLIENTEDGE) ; 
-    DWORD err = GetLastError() ; 
+
     LVCOLUMN LvCol ;
     LvCol.mask = LVCF_TEXT | LVCF_WIDTH ;
     LvCol.pszText = const_cast<TCHAR *>(_T("¿Ã∏ß")) ;
@@ -64,11 +65,15 @@ LRESULT CMainWnd::OnSize(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BO
 {
     RECT rc ; 
     GetClientRect(&rc) ; 
+    LONG end = rc.right ; 
     rc.right = rc.left + 200 ; 
     ::SetWindowPos(m_TreeView, NULL, 0, 0, rc.right - rc.left, rc.bottom - rc.top, SWP_SHOWWINDOW) ; 
     rc.left = rc.right + 10 ;
     rc.right = rc.left + 300 ;
     ::SetWindowPos(m_ListView, NULL, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, SWP_SHOWWINDOW) ; 
+    rc.left = rc.right + 10 ;
+    rc.right = end - 10 ; 
+    ::SetWindowPos(m_ImageWnd, NULL, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, SWP_SHOWWINDOW) ; 
     return 0 ; 
 }
 
@@ -143,18 +148,10 @@ void CMainWnd::CreateListView(RECT &rc)
     return ; 
 }
 
-void CMainWnd::Draw(CPath &path) 
+void CMainWnd::Draw(CPath &Path) 
 {
+    CMainApp::GetInstance().SetFileName(Path) ; 
     ::InvalidateRect(m_ImageWnd, nullptr, true) ;
     ::UpdateWindow(m_ImageWnd) ; 
-
-    Gdiplus::Graphics grfx { m_hWnd } ; 
-    Gdiplus::Image img { path } ; 
-    INT nWidth = img.GetWidth() / 3 ; 
-    INT nHeight = img.GetHeight() / 3 ; 
-    if(grfx.DrawImage(&img, 600, 10, nWidth, nHeight) != 0) 
-    {
-        ATLASSERT(0) ; 
-    }
     return ;
 }

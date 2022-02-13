@@ -39,6 +39,6 @@ class CMainWnd : public CWindowImpl<CMainWnd>
     public :
         void CreateTreeView(RECT &rc) ; 
         void CreateListView(RECT &rc) ; 
-        void Draw(CPath &path) ; 
+        void Draw(CPath &Path) ; 
 } ;
 
