@@ -33,17 +33,6 @@ LRESULT CMainWnd::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, 
     rc.left = rc.right + 10 ;
     rc.right = end - 10 ; 
     m_ImageWnd.Create(m_hWnd, rc, NULL, WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, WS_EX_CLIENTEDGE) ; 
-
-    LVCOLUMN LvCol ;
-    LvCol.mask = LVCF_TEXT | LVCF_WIDTH ;
-    LvCol.pszText = const_cast<TCHAR *>(_T("이름")) ;
-    LvCol.cx = 150 ;
-    ListView_InsertColumn(m_ListView.m_hWnd, 0, &LvCol) ;
-
-    LvCol.pszText = const_cast<TCHAR *>(_T("수정한 날짜")) ; 
-    LvCol.cx = 146 ; 
-    ListView_InsertColumn(m_ListView.m_hWnd, 1, &LvCol) ; 
-
     CFileLoader FileLoader ;
     ItemAttributes InitItemAttributes ;
     CPath InitPath { _T("C:\\users") } ;
@@ -145,6 +134,16 @@ void CMainWnd::CreateListView(RECT &rc)
 {
     const DWORD dwLVStyle = WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | LVS_REPORT ;
     m_ListView.Create(WC_LISTVIEW, m_hWnd, rc, NULL, dwLVStyle, WS_EX_CLIENTEDGE, IDC_MAIN_LIST_VIEW) ;
+    LVCOLUMN LvCol ;
+    LvCol.mask = LVCF_TEXT | LVCF_WIDTH ;
+
+    LvCol.pszText = const_cast<TCHAR *>(_T("이름")) ;
+    LvCol.cx = 150 ;
+    ListView_InsertColumn(m_ListView.m_hWnd, 0, &LvCol) ;
+
+    LvCol.pszText = const_cast<TCHAR *>(_T("수정한 날짜")) ; 
+    LvCol.cx = 146 ; 
+    ListView_InsertColumn(m_ListView.m_hWnd, 1, &LvCol) ; 
     return ; 
 }
 
